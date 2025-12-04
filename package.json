@@ -1,0 +1,11 @@
+{
+  "dependencies": {
+    "@tailwindcss/cli": "^4.1.17",
+    "flowbite": "^4.0.1",
+    "tailwindcss": "^4.1.17"
+  },
+  "scripts": {
+    "start": "concurrently \"npx @tailwindcss/cli -i ./css/input.css -o ./css/output.css --watch\" \"lite-server\"",
+    "build": "npx @tailwindcss/cli -i ./input.css -o ./output.css --watch"
+  }
+}
