@@ -7,5 +7,9 @@
   "scripts": {
     "start": "concurrently \"npx @tailwindcss/cli -i ./css/input.css -o ./css/output.css --watch\" \"lite-server\"",
     "build": "npx @tailwindcss/cli -i ./input.css -o ./output.css --watch"
+  },
+  "devDependencies": {
+    "prettier": "^3.7.4",
+    "prettier-plugin-tailwindcss": "^0.7.2"
   }
 }
