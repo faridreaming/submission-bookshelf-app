@@ -9,124 +9,289 @@
   </head>
   <body>
     <div class="container mx-auto max-w-2xl">
-      <header>
-        <h1>Bookshelf App</h1>
+      <header class="flex justify-between py-4">
+        <h1 class="flex items-center gap-2 text-center text-xl font-medium">
+          <div class="border-2 border-black bg-white p-1">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-library-icon lucide-library"
+            >
+              <path d="m16 6 4 14" />
+              <path d="M12 6v14" />
+              <path d="M8 8v12" />
+              <path d="M4 4v16" />
+            </svg>
+          </div>
+          Bookshelf App
+        </h1>
+        <button
+          type="button"
+          onclick="tambahBukuModal.showModal()"
+          class="flex items-center gap-1.5 border-2 border-black bg-green-300 px-4 py-2 font-semibold text-black shadow-[4px_4px_0_0] hover:translate-1 hover:shadow-none focus:ring-2 focus:ring-green-300 focus:outline-0"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="lucide lucide-plus-icon lucide-plus"
+          >
+            <path d="M5 12h14" />
+            <path d="M12 5v14" />
+          </svg>
+          Tambah Buku
+        </button>
       </header>
 
-      <main>
-        <section>
-          <h2>Tambah Buku Baru</h2>
-          <form id="bookForm" data-testid="bookForm">
-            <div>
-              <label for="bookFormTitle">Judul</label>
-              <input
-                id="bookFormTitle"
-                type="text"
-                required
-                data-testid="bookFormTitleInput"
-              />
-            </div>
-            <div>
-              <label for="bookFormAuthor">Penulis</label>
-              <input
-                id="bookFormAuthor"
-                type="text"
-                required
-                data-testid="bookFormAuthorInput"
-              />
-            </div>
-            <div>
-              <label for="bookFormYear">Tahun</label>
-              <input
-                id="bookFormYear"
-                type="number"
-                required
-                data-testid="bookFormYearInput"
-              />
-            </div>
-            <div>
-              <label for="bookFormIsComplete">Selesai dibaca</label>
-              <input
-                id="bookFormIsComplete"
-                type="checkbox"
-                data-testid="bookFormIsCompleteCheckbox"
-              />
-            </div>
+      <main class="py-4 pt-0">
+        <div class="border-b-2 border-black px-2">
+          <div role="tablist" class="-mb-0.5 flex">
             <button
-              id="bookFormSubmit"
-              type="submit"
-              data-testid="bookFormSubmitButton"
+              role="tab"
+              aria-selected="true"
+              class="flex items-center gap-1.5 border-2 border-black bg-yellow-300 px-6 py-2 font-semibold text-black focus:ring-2 focus:ring-yellow-300 focus:outline-0"
             >
-              Masukkan Buku ke rak <span>Belum selesai dibaca</span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="lucide lucide-library-big-icon lucide-library-big h-4 w-4"
+              >
+                <rect width="8" height="18" x="3" y="3" rx="1" />
+                <path d="M7 3v18" />
+                <path
+                  d="M20.4 18.9c.2.5-.1 1.1-.6 1.3l-1.9.7c-.5.2-1.1-.1-1.3-.6L11.1 5.1c-.2-.5.1-1.1.6-1.3l1.9-.7c.5-.2 1.1.1 1.3.6Z"
+                />
+              </svg>
+              Semua Buku
             </button>
-          </form>
-        </section>
 
-        <section>
-          <h2>Cari Buku</h2>
-          <form id="searchBook" data-testid="searchBookForm">
-            <label for="searchBookTitle">Judul</label>
-            <input
-              id="searchBookTitle"
-              type="text"
-              data-testid="searchBookFormTitleInput"
-            />
             <button
-              id="searchSubmit"
-              type="submit"
-              data-testid="searchBookFormSubmitButton"
+              role="tab"
+              aria-selected="false"
+              class="flex items-center gap-1.5 border-2 border-transparent px-6 py-2 font-semibold hover:bg-black hover:text-white focus:ring-2 focus:ring-yellow-300 focus:outline-0"
             >
-              Cari
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="lucide lucide-bookmark-icon lucide-bookmark h-4 w-4"
+              >
+                <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z" />
+              </svg>
+              Belum Dibaca
             </button>
-          </form>
-        </section>
 
-        <section>
-          <h2>Belum selesai dibaca</h2>
+            <button
+              role="tab"
+              aria-selected="false"
+              class="flex items-center gap-1.5 border-2 border-transparent px-6 py-2 font-semibold hover:bg-black hover:text-white focus:ring-2 focus:ring-yellow-300 focus:outline-0"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="lucide lucide-bookmark-check-icon lucide-bookmark-check h-4 w-4"
+              >
+                <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2Z" />
+                <path d="m9 10 2 2 4-4" />
+              </svg>
+              Sudah Dibaca
+            </button>
+          </div>
+        </div>
 
-          <div id="incompleteBookList" data-testid="incompleteBookList">
-            <!-- 
+        <div
+          role="tabpanel"
+          class="-mt-0.5 border-2 border-black p-4 shadow-[4px_4px_0_0]"
+        >
+          <section>
+            <h2>Tambah Buku Baru</h2>
+            <form id="bookForm" data-testid="bookForm">
+              <div>
+                <label for="bookFormTitle">Judul</label>
+                <input
+                  id="bookFormTitle"
+                  type="text"
+                  required
+                  data-testid="bookFormTitleInput"
+                />
+              </div>
+              <div>
+                <label for="bookFormAuthor">Penulis</label>
+                <input
+                  id="bookFormAuthor"
+                  type="text"
+                  required
+                  data-testid="bookFormAuthorInput"
+                />
+              </div>
+              <div>
+                <label for="bookFormYear">Tahun</label>
+                <input
+                  id="bookFormYear"
+                  type="number"
+                  required
+                  data-testid="bookFormYearInput"
+                />
+              </div>
+              <div>
+                <label for="bookFormIsComplete">Selesai dibaca</label>
+                <input
+                  id="bookFormIsComplete"
+                  type="checkbox"
+                  data-testid="bookFormIsCompleteCheckbox"
+                />
+              </div>
+              <button
+                id="bookFormSubmit"
+                type="submit"
+                data-testid="bookFormSubmitButton"
+              >
+                Masukkan Buku ke rak <span>Belum selesai dibaca</span>
+              </button>
+            </form>
+          </section>
+
+          <section>
+            <h2>Cari Buku</h2>
+            <form id="searchBook" data-testid="searchBookForm">
+              <label for="searchBookTitle">Judul</label>
+              <input
+                id="searchBookTitle"
+                type="text"
+                data-testid="searchBookFormTitleInput"
+              />
+              <button
+                id="searchSubmit"
+                type="submit"
+                data-testid="searchBookFormSubmitButton"
+              >
+                Cari
+              </button>
+            </form>
+          </section>
+
+          <section>
+            <h2>Belum selesai dibaca</h2>
+
+            <div id="incompleteBookList" data-testid="incompleteBookList">
+              <!-- 
             Ini adalah struktur HTML untuk masing-masing buku.
             Pastikan susunan elemen beserta atribut data-testid menyesuaikan seperti contoh ini.
           -->
-            <div data-bookid="123123123" data-testid="bookItem">
-              <h3 data-testid="bookItemTitle">Judul Buku 1</h3>
-              <p data-testid="bookItemAuthor">Penulis: Penulis Buku 1</p>
-              <p data-testid="bookItemYear">Tahun: 2030</p>
-              <div>
-                <button data-testid="bookItemIsCompleteButton">
-                  Selesai dibaca
-                </button>
-                <button data-testid="bookItemDeleteButton">Hapus Buku</button>
-                <button data-testid="bookItemEditButton">Edit Buku</button>
+              <div data-bookid="123123123" data-testid="bookItem">
+                <h3 data-testid="bookItemTitle">Judul Buku 1</h3>
+                <p data-testid="bookItemAuthor">Penulis: Penulis Buku 1</p>
+                <p data-testid="bookItemYear">Tahun: 2030</p>
+                <div>
+                  <button data-testid="bookItemIsCompleteButton">
+                    Selesai dibaca
+                  </button>
+                  <button data-testid="bookItemDeleteButton">Hapus Buku</button>
+                  <button data-testid="bookItemEditButton">Edit Buku</button>
+                </div>
               </div>
             </div>
-          </div>
-        </section>
+          </section>
 
-        <section>
-          <h2>Selesai dibaca</h2>
+          <section>
+            <h2>Selesai dibaca</h2>
 
-          <div id="completeBookList" data-testid="completeBookList">
-            <!-- 
+            <div id="completeBookList" data-testid="completeBookList">
+              <!-- 
             Ini adalah struktur HTML untuk masing-masing buku.
             Pastikan susunan elemen beserta atribut data-testid menyesuaikan seperti contoh ini.
           -->
-            <div data-bookid="456456456" data-testid="bookItem">
-              <h3 data-testid="bookItemTitle">Judul Buku 2</h3>
-              <p data-testid="bookItemAuthor">Penulis: Penulis Buku 2</p>
-              <p data-testid="bookItemYear">Tahun: 2030</p>
-              <div>
-                <button data-testid="bookItemIsCompleteButton">
-                  Selesai dibaca
-                </button>
-                <button data-testid="bookItemDeleteButton">Hapus Buku</button>
-                <button data-testid="bookItemEditButton">Edit Buku</button>
+              <div data-bookid="456456456" data-testid="bookItem">
+                <h3 data-testid="bookItemTitle">Judul Buku 2</h3>
+                <p data-testid="bookItemAuthor">Penulis: Penulis Buku 2</p>
+                <p data-testid="bookItemYear">Tahun: 2030</p>
+                <div>
+                  <button data-testid="bookItemIsCompleteButton">
+                    Selesai dibaca
+                  </button>
+                  <button data-testid="bookItemDeleteButton">Hapus Buku</button>
+                  <button data-testid="bookItemEditButton">Edit Buku</button>
+                </div>
               </div>
             </div>
-          </div>
-        </section>
+          </section>
+        </div>
       </main>
     </div>
+
+    <dialog
+      id="tambahBukuModal"
+      class="m-auto max-w-xl border-2 border-black bg-white shadow-[4px_4px_0_0,8px_8px_0_0] backdrop:bg-black/25"
+    >
+      <div class="bg-yellow-300 p-3">
+        <div class="flex items-center justify-between">
+          <strong class="text-xs/none font-bold uppercase"
+            >Tambah Buku Baru</strong
+          >
+          <form method="dialog">
+            <button class="border-2 border-black bg-white hover:bg-red-300">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="lucide lucide-x-icon lucide-x h-6 w-6"
+              >
+                <path d="M18 6 6 18" />
+                <path d="m6 6 12 12" />
+              </svg>
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <div class="border-t-2 border-black p-4 sm:p-6">
+        <h3 class="text-lg font-semibold text-black">Retro Window</h3>
+
+        <p class="mt-2 text-sm text-pretty">
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Magnam nihil,
+          sit quod quos quibusdam quam ducimus dolore necessitatibus delectus
+          perspiciatis.
+        </p>
+      </div>
+    </dialog>
   </body>
 </html>
