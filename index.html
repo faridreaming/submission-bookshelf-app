@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="./css/output.css" />
-    <script defer src="./js/main.js"></script>
+    <script defer type="module" src="./js/App.js"></script>
     <title>Bookshelf App</title>
   </head>
   <body>
@@ -58,11 +58,11 @@
 
       <main class="py-4 pt-0">
         <div class="border-b-2 border-black px-2">
-          <div role="tablist" class="-mb-0.5 flex">
+          <div id="tablist" role="tablist" class="-mb-0.5 flex">
             <button
+              value="all"
               role="tab"
-              aria-selected="true"
-              class="flex items-center gap-1.5 border-2 border-black bg-yellow-300 px-6 py-2 font-semibold text-black focus:ring-2 focus:ring-yellow-300 focus:outline-0"
+              class="flex items-center gap-1.5 border-2 border-transparent px-6 py-2 font-semibold hover:bg-black hover:text-white focus:ring-2 focus:ring-yellow-300 focus:outline-0 aria-selected:border-black aria-selected:bg-yellow-300 aria-selected:hover:text-black"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -86,9 +86,9 @@
             </button>
 
             <button
+              value="unread"
               role="tab"
-              aria-selected="false"
-              class="flex items-center gap-1.5 border-2 border-transparent px-6 py-2 font-semibold hover:bg-black hover:text-white focus:ring-2 focus:ring-yellow-300 focus:outline-0"
+              class="flex items-center gap-1.5 border-2 border-transparent px-6 py-2 font-semibold hover:bg-black hover:text-white focus:ring-2 focus:ring-yellow-300 focus:outline-0 aria-selected:border-black aria-selected:bg-yellow-300 aria-selected:hover:text-black"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -108,9 +108,9 @@
             </button>
 
             <button
+              value="read"
               role="tab"
-              aria-selected="false"
-              class="flex items-center gap-1.5 border-2 border-transparent px-6 py-2 font-semibold hover:bg-black hover:text-white focus:ring-2 focus:ring-yellow-300 focus:outline-0"
+              class="flex items-center gap-1.5 border-2 border-transparent px-6 py-2 font-semibold hover:bg-black hover:text-white focus:ring-2 focus:ring-yellow-300 focus:outline-0 aria-selected:border-black aria-selected:bg-yellow-300 aria-selected:hover:text-black"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
