@@ -1,29 +1,5 @@
 import TabManager from './TabManager.js'
-
-const addBookModal = document.getElementById('addBookModal')
-const addBookModalTrigger = document.getElementById('addBookModalTrigger')
-addBookModalTrigger.addEventListener('click', () => {
-  addBookModal.showModal()
-})
-
-const bookFormSubmitButton = document.getElementById('bookFormSubmit')
-const bookFormSubmitButtonText = bookFormSubmitButton.querySelector('span')
-const bookFormIsComplete = document.getElementById('bookFormIsComplete')
-bookFormIsComplete.addEventListener('change', function () {
-  bookFormSubmitButtonText.innerText = this.checked
-    ? 'Sudah dibaca'
-    : 'Belum dibaca'
-})
-
-// TEMPLATES FROM HTML
-const allBookListTemplate = document.getElementById('allBookListTemplate')
-const completeBookListTemplate = document.getElementById(
-  'completeBookListTemplate',
-)
-const incompleteBookListTemplate = document.getElementById(
-  'incompleteBookListTemplate',
-)
-const bookItemTemplate = document.getElementById('bookItemTemplate')
+import Book from './Book.js'
 
 class App {
   static instance = null
@@ -31,12 +7,30 @@ class App {
   constructor() {
     if (App.instance) return App.instance
 
+    this.addBookModal = document.getElementById('addBookModal')
+    this.addBookModalTrigger = document.getElementById('addBookModalTrigger')
+
+    this.bookFormSubmitButton = document.getElementById('bookFormSubmit')
+    this.bookFormSubmitButtonText =
+      this.bookFormSubmitButton.querySelector('span')
+    this.bookFormIsComplete = document.getElementById('bookFormIsComplete')
+
+    this.allBookListTemplate = document.getElementById('allBookListTemplate')
+    this.completeBookListTemplate = document.getElementById(
+      'completeBookListTemplate',
+    )
+    this.incompleteBookListTemplate = document.getElementById(
+      'incompleteBookListTemplate',
+    )
+    this.bookItemTemplate = document.getElementById('bookItemTemplate')
+
+    this.bindEvents()
+
     this.tabs = [
       { name: 'all', title: 'Daftar Semua Buku' },
       { name: 'incomplete', title: 'Daftar Buku Belum Dibaca' },
       { name: 'complete', title: 'Daftar Buku Sudah Dibaca' },
     ]
-
     this.activeTab = this.tabs[0]
     this.books = []
 
@@ -54,6 +48,17 @@ class App {
     App.instance = this
   }
 
+  bindEvents() {
+    this.addBookModalTrigger.addEventListener('click', () => {
+      this.addBookModal.showModal()
+    })
+    this.bookFormIsComplete.addEventListener('change', (event) => {
+      this.bookFormSubmitButtonText.innerText = event.target.checked
+        ? 'Sudah dibaca'
+        : 'Belum dibaca'
+    })
+  }
+
   setTab(name) {
     const found = this.tabs.find((t) => t.name === name)
     if (!found) return
@@ -65,43 +70,51 @@ class App {
     this.renderTabcontent()
   }
 
-  renderTabcontent() {
-    this.tabPanel.innerHTML = ''
+  createBookElement(book) {
+    const bookClone = this.bookItemTemplate.content.cloneNode(true)
 
-    let selectedTemplate
-    if (this.activeTab.name === 'all') selectedTemplate = allBookListTemplate
-    else if (this.activeTab.name === 'complete')
-      selectedTemplate = completeBookListTemplate
-    else selectedTemplate = incompleteBookListTemplate
+    bookClone.querySelector('[data-testid="bookItemTitle"]').textContent =
+      book.title
+    bookClone.querySelector('[data-testid="bookItemAuthor"]').textContent =
+      `Penulis: ${book.author}`
+    bookClone.querySelector('[data-testid="bookItemYear"]').textContent =
+      `Tahun: ${book.year}`
 
-    const containerClone = selectedTemplate.content.cloneNode(true)
+    const completeBtn = bookClone.querySelector(
+      '[data-testid="bookItemIsCompleteButton"]',
+    )
+    completeBtn.textContent = book.isComplete
+      ? 'Belum selesai dibaca'
+      : 'Selesai dibaca'
 
-    const listContainer = containerClone.querySelector('div')
+    return bookClone
+  }
 
-    const filteredBooks = this.books.filter((book) => {
+  getContainerTemplate() {
+    if (this.activeTab.name === 'all') return this.allBookListTemplate
+    if (this.activeTab.name === 'complete') return this.completeBookListTemplate
+    return this.incompleteBookListTemplate
+  }
+
+  getFilteredBooks() {
+    return this.books.filter((book) => {
       if (this.activeTab.name === 'all') return true
       if (this.activeTab.name === 'complete') return book.isComplete
       if (this.activeTab.name === 'incomplete') return !book.isComplete
+      return false
     })
+  }
+
+  renderTabcontent() {
+    this.tabPanel.innerHTML = ''
+
+    const selectedTemplate = this.getContainerTemplate()
+    const containerClone = selectedTemplate.content.cloneNode(true)
+    const listContainer = containerClone.querySelector('div')
+    const filteredBooks = this.getFilteredBooks()
 
     filteredBooks.forEach((book) => {
-      const bookClone = bookItemTemplate.content.cloneNode(true)
-
-      bookClone.querySelector('[data-testid="bookItemTitle"]').textContent =
-        book.title
-      bookClone.querySelector('[data-testid="bookItemAuthor"]').textContent =
-        `Penulis: ${book.author}`
-      bookClone.querySelector('[data-testid="bookItemYear"]').textContent =
-        `Tahun: ${book.year}`
-
-      const completeBtn = bookClone.querySelector(
-        '[data-testid="bookItemIsCompleteButton"]',
-      )
-      completeBtn.textContent = book.isComplete
-        ? 'Belum selesai dibaca'
-        : 'Selesai dibaca'
-
-      listContainer.appendChild(bookClone)
+      listContainer.appendChild(this.createBookElement(book))
     })
 
     this.tabPanel.appendChild(containerClone)
