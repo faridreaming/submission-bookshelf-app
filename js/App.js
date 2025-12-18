@@ -9,6 +9,7 @@ class App {
 
     this.addBookModal = document.getElementById('addBookModal')
     this.addBookModalTrigger = document.getElementById('addBookModalTrigger')
+    this.bookForm = document.getElementById('bookForm')
 
     this.bookFormSubmitButton = document.getElementById('bookFormSubmit')
     this.bookFormSubmitButtonText =
@@ -52,11 +53,32 @@ class App {
     this.addBookModalTrigger.addEventListener('click', () => {
       this.addBookModal.showModal()
     })
+
     this.bookFormIsComplete.addEventListener('change', (event) => {
       this.bookFormSubmitButtonText.innerText = event.target.checked
         ? 'Sudah dibaca'
         : 'Belum dibaca'
     })
+
+    this.bookForm.addEventListener('submit', (event) => this.addBook(event))
+  }
+
+  addBook(event) {
+    event.preventDefault()
+
+    const title = document.getElementById('bookFormTitle').value
+    const author = document.getElementById('bookFormAuthor').value
+    const year = parseInt(document.getElementById('bookFormYear').value)
+    const isComplete = this.bookFormIsComplete.checked
+
+    const newBook = new Book(
+      crypto.randomUUID(),
+      title,
+      author,
+      year,
+      isComplete,
+    )
+    console.log(newBook)
   }
 
   setTab(name) {
