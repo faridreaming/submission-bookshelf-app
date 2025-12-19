@@ -1,5 +1,6 @@
 import TabManager from './TabManager.js'
 import Book from './Book.js'
+import BookManager from './BookManager.js'
 
 class App {
   static instance = null
@@ -33,7 +34,7 @@ class App {
       { name: 'complete', title: 'Daftar Buku Sudah Dibaca' },
     ]
     this.activeTab = this.tabs[0]
-    this.books = []
+    this.bookManager = new BookManager()
 
     this.tabManager = new TabManager({
       tabs: this.tabs,
@@ -78,7 +79,13 @@ class App {
       year,
       isComplete,
     )
-    console.log(newBook)
+    this.bookManager.addBook(newBook)
+
+    this.renderTabcontent()
+
+    event.target.reset()
+    this.addBookModal.close()
+    this.bookFormSubmitButtonText.innerText = 'Belum dibaca'
   }
 
   setTab(name) {
@@ -87,7 +94,7 @@ class App {
 
     this.activeTab = found
     this.tabManager.render(found.name)
-    console.log(this.activeTab)
+    // console.log(this.activeTab)
 
     this.renderTabcontent()
   }
@@ -118,25 +125,21 @@ class App {
     return this.incompleteBookListTemplate
   }
 
-  getFilteredBooks() {
-    return this.books.filter((book) => {
-      if (this.activeTab.name === 'all') return true
-      if (this.activeTab.name === 'complete') return book.isComplete
-      if (this.activeTab.name === 'incomplete') return !book.isComplete
-      return false
-    })
-  }
-
   renderTabcontent() {
     this.tabPanel.innerHTML = ''
 
     const selectedTemplate = this.getContainerTemplate()
     const containerClone = selectedTemplate.content.cloneNode(true)
     const listContainer = containerClone.querySelector('div')
-    const filteredBooks = this.getFilteredBooks()
+    const filteredBooks = this.bookManager.getFilteredBooks(this.activeTab.name)
 
-    filteredBooks.forEach((book) => {
+    filteredBooks.forEach((book, index) => {
       listContainer.appendChild(this.createBookElement(book))
+      if (filteredBooks.length > 1 && index !== filteredBooks.length - 1) {
+        const divider = document.createElement('hr')
+        divider.className = 'border-t-2 border-dashed'
+        listContainer.appendChild(divider)
+      }
     })
 
     this.tabPanel.appendChild(containerClone)
