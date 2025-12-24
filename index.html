@@ -159,20 +159,12 @@
           </div>
         </div>
 
-        <!-- ----------------------------------------------------------------------- -->
-        <!--                                BOOK LIST                                -->
-        <!-- ----------------------------------------------------------------------- -->
-
         <div
           role="tabpanel"
           class="-mt-0.5 border-2 border-black p-4 shadow-[4px_4px_0_0]"
         ></div>
       </main>
     </div>
-
-    <!-- ----------------------------------------------------------------------- -->
-    <!--                                 DIALOG                                  -->
-    <!-- ----------------------------------------------------------------------- -->
 
     <dialog
       id="addBookModal"
@@ -267,10 +259,6 @@
       </div>
     </dialog>
 
-    <!-- ----------------------------------------------------------------------- -->
-    <!--                                TEMPLATES                                -->
-    <!-- ----------------------------------------------------------------------- -->
-
     <template id="allBookListTemplate">
       <div class="space-y-4"></div>
     </template>
@@ -292,12 +280,20 @@
     </template>
 
     <template id="bookItemTemplate">
-      <div data-testid="bookItem">
-        <h3 data-testid="bookItemTitle"></h3>
-        <p data-testid="bookItemAuthor"></p>
-        <p data-testid="bookItemYear"></p>
+      <div data-testid="bookItem" class="grid grid-cols-[auto_1fr_auto] gap-4">
+        <button
+          data-testid="bookItemIsCompleteButton"
+          class="hover:[&>svg]:fill-yellow-300"
+        ></button>
         <div>
-          <button data-testid="bookItemIsCompleteButton">Selesai dibaca</button>
+          <h3 data-testid="bookItemTitle" class="text-lg font-semibold"></h3>
+          <p class="font space-x-0.5 text-sm">
+            <span data-testid="bookItemAuthor"></span>
+            <span>•</span>
+            <span data-testid="bookItemYear"></span>
+          </p>
+        </div>
+        <div>
           <button data-testid="bookItemDeleteButton">Hapus Buku</button>
           <button data-testid="bookItemEditButton">Edit Buku</button>
         </div>
