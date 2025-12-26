@@ -28,6 +28,10 @@ class App {
     )
     this.bookItemTemplate = document.getElementById('bookItemTemplate')
 
+    this.confirmToggleIsCompleteModal = document.getElementById(
+      'confirmToggleIsCompleteModal',
+    )
+
     this.bindEvents()
 
     this.ACTIVE_TAB_KEY = 'bookshelf_active_tab'
@@ -65,6 +69,18 @@ class App {
     })
 
     this.bookForm.addEventListener('submit', (event) => this.addBook(event))
+  }
+
+  bindBookItemsEvents() {
+    const confirmToggleIsCompleteModalTriggers = document.querySelectorAll(
+      '[data-testid="bookItemIsCompleteButton"]',
+    )
+
+    confirmToggleIsCompleteModalTriggers.forEach((t) => {
+      t.addEventListener('click', () => {
+        this.confirmToggleIsCompleteModal.showModal()
+      })
+    })
   }
 
   getActiveTab() {
@@ -120,6 +136,7 @@ class App {
     const completeBtn = bookClone.querySelector(
       '[data-testid="bookItemIsCompleteButton"]',
     )
+    completeBtn.dataset.bookId = book.id
     completeBtn.innerHTML = book.isComplete
       ? html`
           <svg
@@ -182,6 +199,7 @@ class App {
     })
 
     this.tabPanel.appendChild(containerClone)
+    this.bindBookItemsEvents()
   }
 }
 
