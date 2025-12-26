@@ -30,12 +30,13 @@ class App {
 
     this.bindEvents()
 
+    this.ACTIVE_TAB_KEY = 'bookshelf_active_tab'
     this.tabs = [
       { name: 'all', title: 'Daftar Semua Buku' },
       { name: 'incomplete', title: 'Daftar Buku Belum Dibaca' },
       { name: 'complete', title: 'Daftar Buku Sudah Dibaca' },
     ]
-    this.activeTab = this.tabs[0]
+    this.activeTab = this.getActiveTab()
     this.bookManager = new BookManager()
 
     this.tabManager = new TabManager({
@@ -64,6 +65,11 @@ class App {
     })
 
     this.bookForm.addEventListener('submit', (event) => this.addBook(event))
+  }
+
+  getActiveTab() {
+    const activeTab = localStorage.getItem(this.ACTIVE_TAB_KEY)
+    return activeTab ? JSON.parse(activeTab) : this.tabs[0]
   }
 
   addBook(event) {
@@ -95,8 +101,8 @@ class App {
     if (!found) return
 
     this.activeTab = found
+    localStorage.setItem(this.ACTIVE_TAB_KEY, JSON.stringify(this.activeTab))
     this.tabManager.render(found.name)
-    // console.log(this.activeTab)
 
     this.renderTabcontent()
   }
