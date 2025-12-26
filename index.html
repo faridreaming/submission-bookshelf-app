@@ -259,6 +259,44 @@
       </div>
     </dialog>
 
+    <dialog
+      id="confirmToggleIsCompleteModal"
+      class="m-auto w-full max-w-xl border-2 border-black bg-white shadow-[4px_4px_0_0,8px_8px_0_0] backdrop:bg-black/25"
+    >
+      <div class="bg-yellow-300 p-3">
+        <div class="flex items-center justify-between">
+          <strong class="text-xs/none font-bold uppercase">Konfirmasi</strong>
+          <form method="dialog">
+            <button
+              class="border-2 border-black bg-white hover:bg-orange-400 focus:bg-orange-400 focus:outline-0"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="lucide lucide-x-icon lucide-x h-6 w-6"
+              >
+                <path d="M18 6 6 18" />
+                <path d="m6 6 12 12" />
+              </svg>
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <div class="border-t-2 border-black p-4 sm:p-6">
+        <p class="text-sm font-semibold">
+          Apakah kamu yakin ingin update status buku?
+        </p>
+      </div>
+    </dialog>
+
     <template id="allBookListTemplate">
       <div class="space-y-4"></div>
     </template>
@@ -283,7 +321,7 @@
       <div data-testid="bookItem" class="grid grid-cols-[auto_1fr_auto] gap-4">
         <button
           data-testid="bookItemIsCompleteButton"
-          class="cursor-pointer hover:[&>svg]:fill-yellow-300"
+          class="cursor-pointer focus:outline-0 hover:[&>svg]:fill-yellow-300 focus:[&>svg]:outline-2"
         ></button>
         <div>
           <h3 data-testid="bookItemTitle" class="text-lg font-semibold"></h3>
