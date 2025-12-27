@@ -177,7 +177,7 @@
           >
           <form method="dialog">
             <button
-              class="border-2 border-black bg-white hover:bg-orange-400 focus:bg-orange-400 focus:outline-0"
+              class="border-2 border-black bg-white hover:bg-rose-400 focus:bg-rose-400 focus:outline-0"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -268,7 +268,7 @@
           <strong class="text-xs/none font-bold uppercase">Konfirmasi</strong>
           <form method="dialog">
             <button
-              class="border-2 border-black bg-white hover:bg-orange-400 focus:bg-orange-400 focus:outline-0"
+              class="border-2 border-black bg-white hover:bg-rose-400 focus:bg-rose-400 focus:outline-0"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -280,7 +280,7 @@
                 stroke-width="2"
                 stroke-linecap="round"
                 stroke-linejoin="round"
-                class="lucide lucide-x-icon lucide-x h-6 w-6"
+                class="ide-x-icon lucide-x h-6 w-6"
               >
                 <path d="M18 6 6 18" />
                 <path d="m6 6 12 12" />
@@ -291,9 +291,24 @@
       </div>
 
       <div class="border-t-2 border-black p-4 sm:p-6">
-        <p class="text-sm font-semibold">
-          Apakah kamu yakin ingin update status buku?
-        </p>
+        <p>Update status buku menjadi <span class="font-semibold"></span>?</p>
+        <div class="flex justify-end gap-2">
+          <form method="dialog">
+            <button
+              type="submit"
+              class="mt-4 border-2 border-black px-4 py-2 font-semibold text-black shadow-[4px_4px_0_0] hover:translate-1 hover:shadow-none focus:ring-2 focus:ring-yellow-300 focus:outline-0"
+            >
+              Tidak, Batalkan
+            </button>
+          </form>
+          <button
+            type="submit"
+            id="confirmToggleIsCompleteButton"
+            class="mt-4 border-2 border-black bg-teal-300 px-4 py-2 font-semibold text-black shadow-[4px_4px_0_0] hover:translate-1 hover:shadow-none focus:ring-2 focus:ring-teal-300 focus:outline-0"
+          >
+            Ya, Update Status Buku
+          </button>
+        </div>
       </div>
     </dialog>
 
@@ -321,7 +336,7 @@
       <div data-testid="bookItem" class="grid grid-cols-[auto_1fr_auto] gap-4">
         <button
           data-testid="bookItemIsCompleteButton"
-          class="cursor-pointer focus:outline-0 hover:[&>svg]:fill-yellow-300 focus:[&>svg]:outline-2"
+          class="focus:outline-0 hover:[&>svg]:fill-yellow-300 focus:[&>svg]:outline-2"
         ></button>
         <div>
           <h3 data-testid="bookItemTitle" class="text-lg font-semibold"></h3>

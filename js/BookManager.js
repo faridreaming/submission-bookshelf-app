@@ -22,6 +22,10 @@ class BookManager {
     return this.books
   }
 
+  getBook(id) {
+    return this.books.filter((book) => book.id === id)[0]
+  }
+
   getFilteredBooks(activeTabName) {
     return this.books.filter((book) => {
       if (activeTabName === 'all') return true

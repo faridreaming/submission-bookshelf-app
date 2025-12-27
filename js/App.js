@@ -70,8 +70,14 @@ class App {
     this.bookForm.addEventListener('submit', (event) => this.addBook(event))
 
     this.tabPanel.addEventListener('click', (event) => {
-      const trigger = event.target.closest('[data-testid="bookItemIsCompleteButton"]')
+      const trigger = event.target.closest(
+        '[data-testid="bookItemIsCompleteButton"]',
+      )
       if (!trigger) return
+      const selectedBookId = trigger.dataset.bookId
+      const selectedBook = this.bookManager.getBook(selectedBookId)
+      this.confirmToggleIsCompleteModal.querySelector('p span').textContent =
+        selectedBook.isComplete ? 'Belum Dibaca' : 'Sudah Dibaca'
       this.confirmToggleIsCompleteModal.showModal()
     })
   }
