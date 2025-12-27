@@ -40,6 +40,7 @@ class App {
     this.emptyBookListTemplate = document.getElementById(
       'emptyBookListTemplate',
     )
+    this.toastTemplate = document.getElementById('toastTemplate')
 
     this.confirmToggleIsCompleteModal = document.getElementById(
       'confirmToggleIsCompleteModal',
@@ -91,6 +92,7 @@ class App {
       if (this.pendingBookId) {
         this.bookManager.toggleBookStatus(this.pendingBookId)
         this.renderTabcontent()
+        this.showToast('Status buku berhasil diperbarui!')
         this.pendingBookId = null
       }
       this.confirmToggleIsCompleteModal.close()
@@ -120,6 +122,8 @@ class App {
     this.bookManager.addBook(newBook)
 
     this.renderTabcontent()
+
+    this.showToast('Buku berhasil ditambahkan!')
 
     event.target.reset()
     this.addBookModal.close()
@@ -187,6 +191,27 @@ class App {
     })
 
     this.tabPanel.appendChild(containerClone)
+  }
+
+  showToast(text, duration = 3000) {
+    const clone = this.toastTemplate.content.cloneNode(true)
+    const toastElement = clone.firstElementChild
+
+    toastElement.querySelector('strong').textContent = text
+    document.body.appendChild(toastElement)
+
+    requestAnimationFrame(() => {
+      toastElement.classList.add('bottom-5')
+    })
+
+    setTimeout(() => {
+      toastElement.classList.remove('bottom-5')
+      setTimeout(() => {
+        if (document.body.contains(toastElement)) {
+          toastElement.remove()
+        }
+      }, 500)
+    }, duration)
   }
 }
 
