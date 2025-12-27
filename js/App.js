@@ -37,6 +37,9 @@ class App {
       'incompleteBookListTemplate',
     )
     this.bookItemTemplate = document.getElementById('bookItemTemplate')
+    this.emptyBookListTemplate = document.getElementById(
+      'emptyBookListTemplate',
+    )
 
     this.confirmToggleIsCompleteModal = document.getElementById(
       'confirmToggleIsCompleteModal',
@@ -166,6 +169,13 @@ class App {
     const containerClone = selectedTemplate.content.cloneNode(true)
     const listContainer = containerClone.querySelector('div')
     const filteredBooks = this.bookManager.getFilteredBooks(this.activeTab.name)
+
+    if (filteredBooks.length === 0) {
+      this.tabPanel.appendChild(
+        this.emptyBookListTemplate.content.cloneNode(true),
+      )
+      return
+    }
 
     filteredBooks.forEach((book, index) => {
       listContainer.appendChild(this.createBookElement(book))

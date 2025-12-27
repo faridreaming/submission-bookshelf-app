@@ -161,7 +161,7 @@
 
         <div
           role="tabpanel"
-          class="-mt-0.5 border-2 border-black p-4 shadow-[4px_4px_0_0]"
+          class="-mt-0.5 border-2 border-black shadow-[4px_4px_0_0]"
         ></div>
       </main>
     </div>
@@ -313,14 +313,14 @@
     </dialog>
 
     <template id="allBookListTemplate">
-      <div class="space-y-4"></div>
+      <div class="space-y-4 p-4"></div>
     </template>
 
     <template id="completeBookListTemplate">
       <div
         id="completeBookList"
         data-testid="completeBookList"
-        class="space-y-4"
+        class="space-y-4 p-4"
       ></div>
     </template>
 
@@ -328,7 +328,7 @@
       <div
         id="incompleteBookList"
         data-testid="incompleteBookList"
-        class="space-y-4"
+        class="space-y-4 p-4"
       ></div>
     </template>
 
@@ -349,6 +349,29 @@
         <div>
           <button data-testid="bookItemDeleteButton">Hapus Buku</button>
           <button data-testid="bookItemEditButton">Edit Buku</button>
+        </div>
+      </div>
+    </template>
+
+    <template id="emptyBookListTemplate">
+      <div role="alert" class="bg-blue-100 p-4 text-blue-900">
+        <div class="flex items-start gap-3">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 16 16"
+            fill="currentColor"
+            class="mt-0.5 size-4"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M15 8A7 7 0 1 1 1 8a7 7 0 0 1 14 0ZM9 5a1 1 0 1 1-2 0 1 1 0 0 1 2 0ZM6.75 8a.75.75 0 0 0 0 1.5h.75v1.75a.75.75 0 0 0 1.5 0v-2.5A.75.75 0 0 0 8.25 8h-1.5Z"
+              clip-rule="evenodd"
+            ></path>
+          </svg>
+
+          <strong class="block flex-1 leading-tight font-semibold">
+            Daftar buku masih kosong!
+          </strong>
         </div>
       </div>
     </template>
