@@ -41,6 +41,9 @@ class App {
     this.confirmToggleIsCompleteModal = document.getElementById(
       'confirmToggleIsCompleteModal',
     )
+    this.confirmToggleIsCompleteButton = document.getElementById(
+      'confirmToggleIsCompleteButton',
+    )
   }
 
   initManagers() {
@@ -74,11 +77,20 @@ class App {
         '[data-testid="bookItemIsCompleteButton"]',
       )
       if (!trigger) return
-      const selectedBookId = trigger.dataset.bookId
-      const selectedBook = this.bookManager.getBook(selectedBookId)
+      this.pendingBookId = trigger.dataset.bookId
+      const selectedBook = this.bookManager.getBook(this.pendingBookId)
       this.confirmToggleIsCompleteModal.querySelector('p span').textContent =
         selectedBook.isComplete ? 'Belum Dibaca' : 'Sudah Dibaca'
       this.confirmToggleIsCompleteModal.showModal()
+    })
+
+    this.confirmToggleIsCompleteButton.addEventListener('click', () => {
+      if (this.pendingBookId) {
+        this.bookManager.toggleBookStatus(this.pendingBookId)
+        this.renderTabcontent()
+        this.pendingBookId = null
+      }
+      this.confirmToggleIsCompleteModal.close()
     })
   }
 
