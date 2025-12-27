@@ -1,44 +1,7 @@
 import TabManager from './TabManager.js'
 import Book from './Book.js'
 import BookManager from './BookManager.js'
-
-const html = (strings, ...values) => String.raw({ raw: strings }, ...values)
-
-const ICONS = {
-  check: html`
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      class="lucide lucide-bookmark-check-icon lucide-bookmark-check"
-    >
-      <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2Z" />
-      <path d="m9 10 2 2 4-4" />
-    </svg>
-  `,
-  bookmark: html`
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      class="lucide lucide-bookmark-icon lucide-bookmark"
-    >
-      <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z" />
-    </svg>
-  `,
-}
+import { ICONS, ACTIVE_TAB_KEY, TABS } from './constants.js'
 
 class App {
   static instance = null
@@ -46,6 +9,17 @@ class App {
   constructor() {
     if (App.instance) return App.instance
 
+    this.initElements()
+    this.initManagers()
+    this.bindEvents()
+
+    this.tabManager.render(this.activeTab.name)
+    this.renderTabcontent()
+
+    App.instance = this
+  }
+
+  initElements() {
     this.addBookModal = document.getElementById('addBookModal')
     this.addBookModalTrigger = document.getElementById('addBookModalTrigger')
     this.bookForm = document.getElementById('bookForm')
@@ -67,30 +41,19 @@ class App {
     this.confirmToggleIsCompleteModal = document.getElementById(
       'confirmToggleIsCompleteModal',
     )
+  }
 
-    this.bindEvents()
-
-    this.ACTIVE_TAB_KEY = 'bookshelf_active_tab'
-    this.tabs = [
-      { name: 'all', title: 'Daftar Semua Buku' },
-      { name: 'incomplete', title: 'Daftar Buku Belum Dibaca' },
-      { name: 'complete', title: 'Daftar Buku Sudah Dibaca' },
-    ]
+  initManagers() {
     this.activeTab = this.getActiveTab()
     this.bookManager = new BookManager()
 
     this.tabManager = new TabManager({
-      tabs: this.tabs,
+      tabs: TABS,
       rootElement: document.getElementById('tablist'),
       onChange: (tabName) => this.setTab(tabName),
     })
 
     this.tabPanel = document.querySelector('[role="tabpanel"]')
-
-    this.tabManager.render(this.activeTab.name)
-    this.renderTabcontent()
-
-    App.instance = this
   }
 
   bindEvents() {
@@ -105,23 +68,17 @@ class App {
     })
 
     this.bookForm.addEventListener('submit', (event) => this.addBook(event))
-  }
 
-  bindBookItemsEvents() {
-    const confirmToggleIsCompleteModalTriggers = document.querySelectorAll(
-      '[data-testid="bookItemIsCompleteButton"]',
-    )
-
-    confirmToggleIsCompleteModalTriggers.forEach((t) => {
-      t.addEventListener('click', () => {
-        this.confirmToggleIsCompleteModal.showModal()
-      })
+    this.tabPanel.addEventListener('click', (event) => {
+      const trigger = event.target.closest('[data-testid="bookItemIsCompleteButton"]')
+      if (!trigger) return
+      this.confirmToggleIsCompleteModal.showModal()
     })
   }
 
   getActiveTab() {
-    const activeTab = localStorage.getItem(this.ACTIVE_TAB_KEY)
-    return activeTab ? JSON.parse(activeTab) : this.tabs[0]
+    const activeTab = localStorage.getItem(ACTIVE_TAB_KEY)
+    return activeTab ? JSON.parse(activeTab) : TABS[0]
   }
 
   addBook(event) {
@@ -149,11 +106,11 @@ class App {
   }
 
   setTab(name) {
-    const found = this.tabs.find((t) => t.name === name)
+    const found = TABS.find((t) => t.name === name)
     if (!found) return
 
     this.activeTab = found
-    localStorage.setItem(this.ACTIVE_TAB_KEY, JSON.stringify(this.activeTab))
+    localStorage.setItem(ACTIVE_TAB_KEY, JSON.stringify(this.activeTab))
     this.tabManager.render(found.name)
 
     this.renderTabcontent()
@@ -202,7 +159,6 @@ class App {
     })
 
     this.tabPanel.appendChild(containerClone)
-    this.bindBookItemsEvents()
   }
 }
 
