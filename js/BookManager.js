@@ -44,7 +44,7 @@ class BookManager {
     const foundBook = this.books.find((book) => book.id === id)
     if (foundBook) {
       foundBook.isComplete = !foundBook.isComplete
-      this.saveToStorage()
+      this.saveToLocalStorage()
     }
   }
 }
