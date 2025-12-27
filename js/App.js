@@ -77,15 +77,23 @@ class App {
     this.bookForm.addEventListener('submit', (event) => this.addBook(event))
 
     this.tabPanel.addEventListener('click', (event) => {
-      const trigger = event.target.closest(
+      const confirmToggleIsCompleteModalTrigger = event.target.closest(
         '[data-testid="bookItemIsCompleteButton"]',
       )
-      if (!trigger) return
-      this.pendingBookId = trigger.dataset.bookId
-      const selectedBook = this.bookManager.getBook(this.pendingBookId)
-      this.confirmToggleIsCompleteModal.querySelector('p span').textContent =
-        selectedBook.isComplete ? 'Belum Dibaca' : 'Sudah Dibaca'
-      this.confirmToggleIsCompleteModal.showModal()
+      if (confirmToggleIsCompleteModalTrigger) {
+        this.pendingBookId = confirmToggleIsCompleteModalTrigger.dataset.bookId
+        const selectedBook = this.bookManager.getBook(this.pendingBookId)
+        this.confirmToggleIsCompleteModal.querySelector('p span').textContent =
+          selectedBook.isComplete ? 'Belum Dibaca' : 'Sudah Dibaca'
+        this.confirmToggleIsCompleteModal.showModal()
+      }
+
+      const editBookModalTrigger = event.target.closest(
+        '[data-testid="bookItemEditButton"]',
+      )
+      if (editBookModalTrigger) {
+        this.addBookModal.showModal()
+      }
     })
 
     this.confirmToggleIsCompleteButton.addEventListener('click', () => {
