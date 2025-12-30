@@ -1,7 +1,6 @@
-import TabManager from './TabManager.js'
 import Book from './Book.js'
 import BookManager from './BookManager.js'
-import { ICONS, ACTIVE_TAB_KEY, TABS } from './constants.js'
+import { ICONS } from './constants.js'
 
 class App {
   static instance = null
@@ -11,15 +10,13 @@ class App {
 
     this.editingId = null
     this.originalFormData = null
-
     this.searchQuery = ''
 
     this.initElements()
     this.initManagers()
     this.bindEvents()
 
-    this.tabManager.render(this.activeTab.name)
-    this.renderTabcontent()
+    this.renderBooks()
 
     App.instance = this
   }
@@ -28,19 +25,11 @@ class App {
     this.bookFormModal = document.getElementById('bookFormModal')
     this.addBookModalTrigger = document.getElementById('addBookModalTrigger')
     this.bookForm = document.getElementById('bookForm')
-
     this.bookFormSubmitButton = document.getElementById('bookFormSubmit')
     this.bookFormSubmitButtonText =
       this.bookFormSubmitButton.querySelector('span')
     this.bookFormIsComplete = document.getElementById('bookFormIsComplete')
 
-    this.allBookListTemplate = document.getElementById('allBookListTemplate')
-    this.completeBookListTemplate = document.getElementById(
-      'completeBookListTemplate',
-    )
-    this.incompleteBookListTemplate = document.getElementById(
-      'incompleteBookListTemplate',
-    )
     this.bookItemTemplate = document.getElementById('bookItemTemplate')
     this.emptyBookListTemplate = document.getElementById(
       'emptyBookListTemplate',
@@ -53,25 +42,20 @@ class App {
     this.confirmToggleIsCompleteButton = document.getElementById(
       'confirmToggleIsCompleteButton',
     )
-
     this.confirmDeleteModal = document.getElementById('confirmDeleteModal')
     this.confirmDeleteButton = document.getElementById('confirmDeleteButton')
 
     this.searchForm = document.getElementById('searchBook')
     this.searchInput = document.getElementById('searchBookTitle')
+
+    this.incompleteListContainer = document.getElementById('incompleteBookList')
+    this.completeListContainer = document.getElementById('completeBookList')
   }
 
   initManagers() {
-    this.activeTab = this.getActiveTab()
     this.bookManager = new BookManager()
 
-    this.tabManager = new TabManager({
-      tabs: TABS,
-      rootElement: document.getElementById('tablist'),
-      onChange: (tabName) => this.setTab(tabName),
-    })
-
-    this.tabPanel = document.querySelector('[role="tabpanel"]')
+    this.mainContainer = document.querySelector('main')
   }
 
   bindEvents() {
@@ -79,16 +63,13 @@ class App {
       this.resetFormState()
       this.bookFormModal.showModal()
     })
-
     this.bookFormIsComplete.addEventListener('change', (event) => {
       this.bookFormSubmitButtonText.innerText = event.target.checked
         ? 'Sudah dibaca'
         : 'Belum dibaca'
     })
-
     this.bookForm.addEventListener('input', () => this.checkFormChanges())
     this.bookForm.addEventListener('change', () => this.checkFormChanges())
-
     this.bookForm.addEventListener('submit', (event) =>
       this.handleBookFormSubmit(event),
     )
@@ -96,15 +77,14 @@ class App {
     this.searchForm.addEventListener('submit', (event) => {
       event.preventDefault()
       this.searchQuery = this.searchInput.value
-      this.renderTabcontent()
+      this.renderBooks()
     })
-
     this.searchInput.addEventListener('input', (event) => {
       this.searchQuery = event.target.value
-      this.renderTabcontent()
+      this.renderBooks()
     })
 
-    this.tabPanel.addEventListener('click', (event) => {
+    this.mainContainer.addEventListener('click', (event) => {
       const confirmToggleIsCompleteModalTrigger = event.target.closest(
         '[data-testid="bookItemIsCompleteButton"]',
       )
@@ -143,7 +123,7 @@ class App {
     this.confirmToggleIsCompleteButton.addEventListener('click', () => {
       if (this.pendingBookId) {
         this.bookManager.toggleBookStatus(this.pendingBookId)
-        this.renderTabcontent()
+        this.renderBooks()
         this.showToast('Status buku berhasil diperbarui!')
         this.pendingBookId = null
       }
@@ -153,7 +133,7 @@ class App {
     this.confirmDeleteButton.addEventListener('click', () => {
       if (this.pendingBookId) {
         this.bookManager.deleteBook(this.pendingBookId)
-        this.renderTabcontent()
+        this.renderBooks()
         this.showToast('Buku berhasil dihapus!')
         this.pendingBookId = null
       }
@@ -161,12 +141,8 @@ class App {
     })
   }
 
-  getActiveTab() {
-    const activeTab = localStorage.getItem(ACTIVE_TAB_KEY)
-    return activeTab ? JSON.parse(activeTab) : TABS[0]
-  }
-
   resetFormState() {
+    /* ... kode sama ... */
     this.editingId = null
     this.originalFormData = null
     this.bookForm.reset()
@@ -187,42 +163,39 @@ class App {
   }
 
   fillFormWithBookData(id) {
+    /* ... kode sama ... */
     const book = this.bookManager.getBook(id)
     if (!book) return
-
     this.editingId = id
-
     this.originalFormData = {
       title: book.title,
       author: book.author,
       year: book.year,
       isComplete: book.isComplete,
     }
-
     document.getElementById('bookFormTitle').value = book.title
     document.getElementById('bookFormAuthor').value = book.author
     document.getElementById('bookFormYear').value = book.year
     this.bookFormIsComplete.checked = book.isComplete
-
-    this.bookFormModal.querySelector('strong').textContent =
-      `Edit Buku ${book.title}`
+    this.bookFormModal.querySelector('strong').textContent = `Edit Buku`
     this.bookFormSubmitButton.innerHTML = 'Simpan Perubahan'
-
     this.checkFormChanges()
   }
 
   checkFormChanges() {
+    /* ... kode sama ... */
     if (!this.editingId) {
       this.bookFormSubmitButton.disabled = false
-      this.bookFormSubmitButton.classList.add('hover:translate-1')
-      this.bookFormSubmitButton.classList.add('hover:shadow-none')
+      this.bookFormSubmitButton.classList.add(
+        'hover:translate-1',
+        'hover:shadow-none',
+      )
       this.bookFormSubmitButton.classList.remove(
         'opacity-50',
         'cursor-not-allowed',
       )
       return
     }
-
     const currentTitle = document.getElementById('bookFormTitle').value
     const currentAuthor = document.getElementById('bookFormAuthor').value
     const currentYear =
@@ -237,15 +210,19 @@ class App {
 
     this.bookFormSubmitButton.disabled = isUnchanged
     if (isUnchanged) {
-      this.bookFormSubmitButton.classList.remove('hover:translate-1')
-      this.bookFormSubmitButton.classList.remove('hover:shadow-none')
+      this.bookFormSubmitButton.classList.remove(
+        'hover:translate-1',
+        'hover:shadow-none',
+      )
       this.bookFormSubmitButton.classList.add(
         'opacity-50',
         'cursor-not-allowed',
       )
     } else {
-      this.bookFormSubmitButton.classList.add('hover:translate-1')
-      this.bookFormSubmitButton.classList.add('hover:shadow-none')
+      this.bookFormSubmitButton.classList.add(
+        'hover:translate-1',
+        'hover:shadow-none',
+      )
       this.bookFormSubmitButton.classList.remove(
         'opacity-50',
         'cursor-not-allowed',
@@ -255,7 +232,7 @@ class App {
 
   handleBookFormSubmit(event) {
     event.preventDefault()
-
+    /* ... ambil value form ... */
     const title = document.getElementById('bookFormTitle').value
     const author = document.getElementById('bookFormAuthor').value
     const year = parseInt(document.getElementById('bookFormYear').value)
@@ -281,25 +258,15 @@ class App {
       this.showToast('Buku berhasil ditambahkan!')
     }
 
-    this.renderTabcontent()
+    this.renderBooks()
     this.bookFormModal.close()
     this.resetFormState()
   }
 
-  setTab(name) {
-    const found = TABS.find((t) => t.name === name)
-    if (!found) return
-
-    this.activeTab = found
-    localStorage.setItem(ACTIVE_TAB_KEY, JSON.stringify(this.activeTab))
-    this.tabManager.render(found.name)
-
-    this.renderTabcontent()
-  }
-
   createBookElement(book) {
+    /* ... kode sama persis ... */
     const bookClone = this.bookItemTemplate.content.cloneNode(true)
-
+    bookClone.querySelector('[data-testid="bookItem"]').dataset.bookid = book.id
     bookClone.querySelector('[data-testid="bookItemTitle"]').textContent =
       book.title
     bookClone.querySelector('[data-testid="bookItemAuthor"]').textContent =
@@ -326,53 +293,15 @@ class App {
     return bookClone
   }
 
-  getContainerTemplate() {
-    if (this.activeTab.name === 'all') return this.allBookListTemplate
-    if (this.activeTab.name === 'complete') return this.completeBookListTemplate
-    return this.incompleteBookListTemplate
-  }
-
-  renderTabcontent() {
-    this.tabPanel.innerHTML = ''
-
-    const selectedTemplate = this.getContainerTemplate()
-    const containerClone = selectedTemplate.content.cloneNode(true)
-    const listContainer = containerClone.querySelector('div')
-    const filteredBooks = this.bookManager.getFilteredBooks(
-      this.activeTab.name,
-      this.searchQuery,
-    )
-
-    if (filteredBooks.length === 0) {
-      this.tabPanel.appendChild(
-        this.emptyBookListTemplate.content.cloneNode(true),
-      )
-      return
-    }
-
-    filteredBooks.forEach((book, index) => {
-      listContainer.appendChild(this.createBookElement(book))
-      if (filteredBooks.length > 1 && index !== filteredBooks.length - 1) {
-        const divider = document.createElement('hr')
-        divider.className = 'border-t-2 border-dashed'
-        listContainer.appendChild(divider)
-      }
-    })
-
-    this.tabPanel.appendChild(containerClone)
-  }
-
   showToast(text, duration = 3000) {
+    /* ... kode sama ... */
     const clone = this.toastTemplate.content.cloneNode(true)
     const toastElement = clone.firstElementChild
-
     toastElement.querySelector('strong').textContent = text
     document.body.appendChild(toastElement)
-
     requestAnimationFrame(() => {
       toastElement.classList.add('bottom-5')
     })
-
     setTimeout(() => {
       toastElement.classList.remove('bottom-5')
       setTimeout(() => {
@@ -381,6 +310,54 @@ class App {
         }
       }, 500)
     }, duration)
+  }
+
+  renderBooks() {
+    this.incompleteListContainer.innerHTML = ''
+    this.completeListContainer.innerHTML = ''
+
+    const incompleteBooks = this.bookManager.getFilteredBooks(
+      'incomplete',
+      this.searchQuery,
+    )
+    const completeBooks = this.bookManager.getFilteredBooks(
+      'complete',
+      this.searchQuery,
+    )
+
+    if (incompleteBooks.length === 0) {
+      const emptyState = this.emptyBookListTemplate.content.cloneNode(true)
+
+      this.incompleteListContainer.appendChild(emptyState)
+    } else {
+      incompleteBooks.forEach((book, index) => {
+        this.incompleteListContainer.appendChild(this.createBookElement(book))
+
+        if (
+          incompleteBooks.length > 1 &&
+          index !== incompleteBooks.length - 1
+        ) {
+          const divider = document.createElement('hr')
+          divider.className = 'border-t-2 border-dashed border-black my-2'
+          this.incompleteListContainer.appendChild(divider)
+        }
+      })
+    }
+
+    if (completeBooks.length === 0) {
+      const emptyState = this.emptyBookListTemplate.content.cloneNode(true)
+      this.completeListContainer.appendChild(emptyState)
+    } else {
+      completeBooks.forEach((book, index) => {
+        this.completeListContainer.appendChild(this.createBookElement(book))
+
+        if (completeBooks.length > 1 && index !== completeBooks.length - 1) {
+          const divider = document.createElement('hr')
+          divider.className = 'border-t-2 border-dashed border-black my-2'
+          this.completeListContainer.appendChild(divider)
+        }
+      })
+    }
   }
 }
 
