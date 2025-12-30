@@ -10,6 +10,9 @@ class App {
     if (App.instance) return App.instance
 
     this.editingId = null
+    this.originalFormData = null
+
+    this.searchQuery = ''
 
     this.initElements()
     this.initManagers()
@@ -53,6 +56,9 @@ class App {
 
     this.confirmDeleteModal = document.getElementById('confirmDeleteModal')
     this.confirmDeleteButton = document.getElementById('confirmDeleteButton')
+
+    this.searchForm = document.getElementById('searchBook')
+    this.searchInput = document.getElementById('searchBookTitle')
   }
 
   initManagers() {
@@ -86,6 +92,17 @@ class App {
     this.bookForm.addEventListener('submit', (event) =>
       this.handleBookFormSubmit(event),
     )
+
+    this.searchForm.addEventListener('submit', (event) => {
+      event.preventDefault()
+      this.searchQuery = this.searchInput.value
+      this.renderTabcontent()
+    })
+
+    this.searchInput.addEventListener('input', (event) => {
+      this.searchQuery = event.target.value
+      this.renderTabcontent()
+    })
 
     this.tabPanel.addEventListener('click', (event) => {
       const confirmToggleIsCompleteModalTrigger = event.target.closest(
@@ -321,7 +338,10 @@ class App {
     const selectedTemplate = this.getContainerTemplate()
     const containerClone = selectedTemplate.content.cloneNode(true)
     const listContainer = containerClone.querySelector('div')
-    const filteredBooks = this.bookManager.getFilteredBooks(this.activeTab.name)
+    const filteredBooks = this.bookManager.getFilteredBooks(
+      this.activeTab.name,
+      this.searchQuery,
+    )
 
     if (filteredBooks.length === 0) {
       this.tabPanel.appendChild(

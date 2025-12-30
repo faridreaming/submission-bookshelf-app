@@ -26,12 +26,23 @@ class BookManager {
     return this.books.filter((book) => book.id === id)[0]
   }
 
-  getFilteredBooks(activeTabName) {
-    return this.books.filter((book) => {
+  getFilteredBooks(activeTabName, query = '') {
+    const filteredByTab = this.books.filter((book) => {
       if (activeTabName === 'all') return true
       if (activeTabName === 'complete') return book.isComplete
       if (activeTabName === 'incomplete') return !book.isComplete
       return false
+    })
+
+    if (!query) return filteredByTab
+
+    const lowerQuery = query.toLowerCase()
+    return filteredByTab.filter((book) => {
+      return (
+        book.title.toLowerCase().includes(lowerQuery) ||
+        book.author.toLowerCase().includes(lowerQuery) ||
+        book.year.toString().includes(lowerQuery)
+      )
     })
   }
 
