@@ -20,7 +20,7 @@ class App {
   }
 
   initElements() {
-    this.addBookModal = document.getElementById('addBookModal')
+    this.bookFormModal = document.getElementById('bookFormModal')
     this.addBookModalTrigger = document.getElementById('addBookModalTrigger')
     this.bookForm = document.getElementById('bookForm')
 
@@ -65,7 +65,7 @@ class App {
 
   bindEvents() {
     this.addBookModalTrigger.addEventListener('click', () => {
-      this.addBookModal.showModal()
+      this.bookFormModal.showModal()
     })
 
     this.bookFormIsComplete.addEventListener('change', (event) => {
@@ -92,7 +92,7 @@ class App {
         '[data-testid="bookItemEditButton"]',
       )
       if (editBookModalTrigger) {
-        this.addBookModal.showModal()
+        this.bookFormModal.showModal()
       }
     })
 
@@ -134,7 +134,7 @@ class App {
     this.showToast('Buku berhasil ditambahkan!')
 
     event.target.reset()
-    this.addBookModal.close()
+    this.bookFormModal.close()
     this.bookFormSubmitButtonText.innerText = 'Belum dibaca'
   }
 
