@@ -9,6 +9,8 @@ class App {
   constructor() {
     if (App.instance) return App.instance
 
+    this.editingId = null
+
     this.initElements()
     this.initManagers()
     this.bindEvents()
@@ -65,6 +67,7 @@ class App {
 
   bindEvents() {
     this.addBookModalTrigger.addEventListener('click', () => {
+      this.resetFormState()
       this.bookFormModal.showModal()
     })
 
@@ -74,7 +77,9 @@ class App {
         : 'Belum dibaca'
     })
 
-    this.bookForm.addEventListener('submit', (event) => this.addBook(event))
+    this.bookForm.addEventListener('submit', (event) =>
+      this.handleBookFormSubmit(event),
+    )
 
     this.tabPanel.addEventListener('click', (event) => {
       const confirmToggleIsCompleteModalTrigger = event.target.closest(
@@ -92,6 +97,8 @@ class App {
         '[data-testid="bookItemEditButton"]',
       )
       if (editBookModalTrigger) {
+        const bookId = editBookModalTrigger.dataset.bookId
+        this.fillFormWithBookData(bookId)
         this.bookFormModal.showModal()
       }
     })
@@ -112,7 +119,32 @@ class App {
     return activeTab ? JSON.parse(activeTab) : TABS[0]
   }
 
-  addBook(event) {
+  resetFormState() {
+    this.editingId = null
+    this.bookForm.reset()
+    this.bookFormModal.querySelector('strong').textContent = 'Tambah Buku Baru'
+    this.bookFormSubmitButton.innerHTML =
+      'Masukkan Buku ke rak <span>Belum dibaca</span>'
+    this.bookFormSubmitButtonText =
+      this.bookFormSubmitButton.querySelector('span')
+  }
+
+  fillFormWithBookData(id) {
+    const book = this.bookManager.getBook(id)
+    if (!book) return
+
+    this.editingId = id
+
+    document.getElementById('bookFormTitle').value = book.title
+    document.getElementById('bookFormAuthor').value = book.author
+    document.getElementById('bookFormYear').value = book.year
+    this.bookFormIsComplete.checked = book.isComplete
+
+    this.bookFormModal.querySelector('strong').textContent = 'Edit Buku'
+    this.bookFormSubmitButton.innerHTML = 'Simpan Perubahan'
+  }
+
+  handleBookFormSubmit(event) {
     event.preventDefault()
 
     const title = document.getElementById('bookFormTitle').value
@@ -120,22 +152,29 @@ class App {
     const year = parseInt(document.getElementById('bookFormYear').value)
     const isComplete = this.bookFormIsComplete.checked
 
-    const newBook = new Book(
-      crypto.randomUUID(),
-      title,
-      author,
-      year,
-      isComplete,
-    )
-    this.bookManager.addBook(newBook)
+    if (this.editingId) {
+      this.bookManager.editBook(this.editingId, {
+        title,
+        author,
+        year,
+        isComplete,
+      })
+      this.showToast('Buku berhasil diperbarui!')
+    } else {
+      const newBook = new Book(
+        crypto.randomUUID(),
+        title,
+        author,
+        year,
+        isComplete,
+      )
+      this.bookManager.addBook(newBook)
+      this.showToast('Buku berhasil ditambahkan!')
+    }
 
     this.renderTabcontent()
-
-    this.showToast('Buku berhasil ditambahkan!')
-
-    event.target.reset()
     this.bookFormModal.close()
-    this.bookFormSubmitButtonText.innerText = 'Belum dibaca'
+    this.resetFormState()
   }
 
   setTab(name) {
@@ -164,6 +203,11 @@ class App {
     )
     completeBtn.dataset.bookId = book.id
     completeBtn.innerHTML = book.isComplete ? ICONS.check : ICONS.bookmark
+
+    const editBtn = bookClone.querySelector(
+      '[data-testid="bookItemEditButton"]',
+    )
+    editBtn.dataset.bookId = book.id
 
     return bookClone
   }

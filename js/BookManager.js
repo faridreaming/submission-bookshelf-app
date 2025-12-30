@@ -47,6 +47,18 @@ class BookManager {
       this.saveToLocalStorage()
     }
   }
+
+  editBook(id, updatedData) {
+    const index = this.books.findIndex((book) => book.id === id)
+    if (index !== -1) {
+      this.books[index] = {
+        ...this.books[index],
+        ...updatedData,
+      }
+
+      this.saveToLocalStorage()
+    }
+  }
 }
 
 export default BookManager
