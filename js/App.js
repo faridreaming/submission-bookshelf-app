@@ -124,8 +124,17 @@ class App {
 
   resetFormState() {
     this.editingId = null
-    this.originalFormData = nul
+    this.originalFormData = null
     this.bookForm.reset()
+    this.bookFormSubmitButton.disabled = false
+    this.bookFormSubmitButton.classList.remove(
+      'opacity-50',
+      'cursor-not-allowed',
+    )
+    this.bookFormSubmitButton.classList.add(
+      'hover:translate-1',
+      'hover:shadow-none',
+    )
     this.bookFormModal.querySelector('strong').textContent = 'Tambah Buku Baru'
     this.bookFormSubmitButton.innerHTML =
       'Masukkan Buku ke rak <span>Belum dibaca</span>'
@@ -161,6 +170,8 @@ class App {
   checkFormChanges() {
     if (!this.editingId) {
       this.bookFormSubmitButton.disabled = false
+      this.bookFormSubmitButton.classList.add('hover:translate-1')
+      this.bookFormSubmitButton.classList.add('hover:shadow-none')
       this.bookFormSubmitButton.classList.remove(
         'opacity-50',
         'cursor-not-allowed',
@@ -182,11 +193,15 @@ class App {
 
     this.bookFormSubmitButton.disabled = isUnchanged
     if (isUnchanged) {
+      this.bookFormSubmitButton.classList.remove('hover:translate-1')
+      this.bookFormSubmitButton.classList.remove('hover:shadow-none')
       this.bookFormSubmitButton.classList.add(
         'opacity-50',
         'cursor-not-allowed',
       )
     } else {
+      this.bookFormSubmitButton.classList.add('hover:translate-1')
+      this.bookFormSubmitButton.classList.add('hover:shadow-none')
       this.bookFormSubmitButton.classList.remove(
         'opacity-50',
         'cursor-not-allowed',
