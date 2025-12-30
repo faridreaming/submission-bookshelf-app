@@ -50,6 +50,9 @@ class App {
     this.confirmToggleIsCompleteButton = document.getElementById(
       'confirmToggleIsCompleteButton',
     )
+
+    this.confirmDeleteModal = document.getElementById('confirmDeleteModal')
+    this.confirmDeleteButton = document.getElementById('confirmDeleteButton')
   }
 
   initManagers() {
@@ -90,10 +93,12 @@ class App {
       )
       if (confirmToggleIsCompleteModalTrigger) {
         this.pendingBookId = confirmToggleIsCompleteModalTrigger.dataset.bookId
-        const selectedBook = this.bookManager.getBook(this.pendingBookId)
-        this.confirmToggleIsCompleteModal.querySelector('p span').textContent =
-          selectedBook.isComplete ? 'Belum Dibaca' : 'Sudah Dibaca'
-        this.confirmToggleIsCompleteModal.showModal()
+        const book = this.bookManager.getBook(this.pendingBookId)
+        if (book) {
+          this.confirmToggleIsCompleteModal.querySelector('span').textContent =
+            book.isComplete ? 'Belum Dibaca' : 'Sudah Dibaca'
+          this.confirmToggleIsCompleteModal.showModal()
+        }
       }
 
       const editBookModalTrigger = event.target.closest(
@@ -103,6 +108,18 @@ class App {
         const bookId = editBookModalTrigger.dataset.bookId
         this.fillFormWithBookData(bookId)
         this.bookFormModal.showModal()
+      }
+
+      const deleteBookModalTrigger = event.target.closest(
+        '[data-testid="bookItemDeleteButton"]',
+      )
+      if (deleteBookModalTrigger) {
+        this.pendingBookId = deleteBookModalTrigger.dataset.bookId
+        const book = this.bookManager.getBook(this.pendingBookId)
+        if (book) {
+          this.confirmDeleteModal.querySelector('span').textContent = book.title
+          this.confirmDeleteModal.showModal()
+        }
       }
     })
 
@@ -114,6 +131,16 @@ class App {
         this.pendingBookId = null
       }
       this.confirmToggleIsCompleteModal.close()
+    })
+
+    this.confirmDeleteButton.addEventListener('click', () => {
+      if (this.pendingBookId) {
+        this.bookManager.deleteBook(this.pendingBookId)
+        this.renderTabcontent()
+        this.showToast('Buku berhasil dihapus!')
+        this.pendingBookId = null
+      }
+      this.confirmDeleteModal.close()
     })
   }
 
@@ -273,6 +300,11 @@ class App {
       '[data-testid="bookItemEditButton"]',
     )
     editBtn.dataset.bookId = book.id
+
+    const deleteBtn = bookClone.querySelector(
+      '[data-testid="bookItemDeleteButton"]',
+    )
+    deleteBtn.dataset.bookId = book.id
 
     return bookClone
   }
