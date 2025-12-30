@@ -77,6 +77,9 @@ class App {
         : 'Belum dibaca'
     })
 
+    this.bookForm.addEventListener('input', () => this.checkFormChanges())
+    this.bookForm.addEventListener('change', () => this.checkFormChanges())
+
     this.bookForm.addEventListener('submit', (event) =>
       this.handleBookFormSubmit(event),
     )
@@ -121,6 +124,7 @@ class App {
 
   resetFormState() {
     this.editingId = null
+    this.originalFormData = nul
     this.bookForm.reset()
     this.bookFormModal.querySelector('strong').textContent = 'Tambah Buku Baru'
     this.bookFormSubmitButton.innerHTML =
@@ -135,13 +139,59 @@ class App {
 
     this.editingId = id
 
+    this.originalFormData = {
+      title: book.title,
+      author: book.author,
+      year: book.year,
+      isComplete: book.isComplete,
+    }
+
     document.getElementById('bookFormTitle').value = book.title
     document.getElementById('bookFormAuthor').value = book.author
     document.getElementById('bookFormYear').value = book.year
     this.bookFormIsComplete.checked = book.isComplete
 
-    this.bookFormModal.querySelector('strong').textContent = 'Edit Buku'
+    this.bookFormModal.querySelector('strong').textContent =
+      `Edit Buku ${book.title}`
     this.bookFormSubmitButton.innerHTML = 'Simpan Perubahan'
+
+    this.checkFormChanges()
+  }
+
+  checkFormChanges() {
+    if (!this.editingId) {
+      this.bookFormSubmitButton.disabled = false
+      this.bookFormSubmitButton.classList.remove(
+        'opacity-50',
+        'cursor-not-allowed',
+      )
+      return
+    }
+
+    const currentTitle = document.getElementById('bookFormTitle').value
+    const currentAuthor = document.getElementById('bookFormAuthor').value
+    const currentYear =
+      parseInt(document.getElementById('bookFormYear').value) || 0
+    const currentIsComplete = this.bookFormIsComplete.checked
+
+    const isUnchanged =
+      currentTitle === this.originalFormData.title &&
+      currentAuthor === this.originalFormData.author &&
+      currentYear === this.originalFormData.year &&
+      currentIsComplete === this.originalFormData.isComplete
+
+    this.bookFormSubmitButton.disabled = isUnchanged
+    if (isUnchanged) {
+      this.bookFormSubmitButton.classList.add(
+        'opacity-50',
+        'cursor-not-allowed',
+      )
+    } else {
+      this.bookFormSubmitButton.classList.remove(
+        'opacity-50',
+        'cursor-not-allowed',
+      )
+    }
   }
 
   handleBookFormSubmit(event) {
